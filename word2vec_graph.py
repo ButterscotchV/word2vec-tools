@@ -24,7 +24,7 @@ if __name__ == '__main__':
     logging.info("Done processing vocab!")
 
     logging.info("Creating TSNE graph...")
-    tsne = TSNE(n_components=2, n_jobs=4)
+    tsne = TSNE(n_components=2, n_jobs=8)
     X_tsne = tsne.fit_transform(X)
     logging.info("Done creating TSNE graph!")
 

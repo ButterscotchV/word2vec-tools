@@ -30,7 +30,7 @@ def read_input(input_file):
             # do some pre-processing and return list of words for each review
             # text
             #words = list(filter(None, unidecode.unidecode(line.lower().replace('\r', '').replace('\n', '')).split(' ')))
-            words = list(filter(None, line.lower().strip().replace('\r', '').replace('\n', '').split(' ')))
+            id, *words = list(filter(None, line.strip().replace('\r', '').replace('\n', '').split(' ')))
 
             if len(words) <= 0:
                 continue
@@ -57,7 +57,7 @@ if __name__ == '__main__':
         size=128,
         window=128,
         min_count=1,
-        workers=16)
+        workers=8)
     model.train(documents, total_examples=len(documents), epochs=15)
 
     if not os.path.exists(os.path.join(abspath, "vectors")):
