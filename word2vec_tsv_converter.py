@@ -1,11 +1,11 @@
-import gensim
 import logging
 import os
+
+import gensim
 
 logging.basicConfig(
     format='%(asctime)s : %(levelname)s : %(message)s',
     level=logging.INFO)
-
 
 if __name__ == '__main__':
     abspath = os.path.dirname(os.path.abspath(__file__))
@@ -25,10 +25,10 @@ if __name__ == '__main__':
 
     for vector in X:
         string_list = list()
-        
+
         for vector_val in vector:
             string_list.append(str(vector_val))
-        
+
         vector_strings.append('\t'.join(string_list))
 
     vectors = '\n'.join(vector_strings)

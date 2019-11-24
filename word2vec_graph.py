@@ -1,14 +1,14 @@
-from MulticoreTSNE import MulticoreTSNE as TSNE
-from pandas import DataFrame
-import matplotlib.pyplot as plt
-import gensim
 import logging
 import os
+
+import gensim
+import matplotlib.pyplot as plt
+from MulticoreTSNE import MulticoreTSNE as TSNE
+from pandas import DataFrame
 
 logging.basicConfig(
     format='%(asctime)s : %(levelname)s : %(message)s',
     level=logging.INFO)
-
 
 if __name__ == '__main__':
     abspath = os.path.dirname(os.path.abspath(__file__))

@@ -1,7 +1,7 @@
-#import unidecode
-import gensim
 import logging
 import os
+
+import gensim
 
 logging.basicConfig(
     format='%(asctime)s : %(levelname)s : %(message)s',
@@ -15,50 +15,51 @@ def show_file_contents(input_file):
             break
 
 
-def read_input(input_file):
-    """This method reads the input file"""
+class LineReader:
+    """Iterator that reads and processes a file."""
 
-    logging.info("Reading file \"{0}\", this may take a while...".format(input_file))
-    with open(input_file, "r", encoding="utf-8") as f:
-        for i, line in enumerate(f):
-            if len(line) <= 0:
-                continue
+    def __init__(self, file):
+        self.file = open(file, 'r', encoding='utf-8')
 
-            if i % 10000 == 0:
-                logging.info("Read {0} lines...".format(i))
+    def __iter__(self):
+        return self
 
-            # do some pre-processing and return list of words for each review
-            # text
-            #words = list(filter(None, unidecode.unidecode(line.lower().replace('\r', '').replace('\n', '')).split(' ')))
-            id, *words = list(filter(None, line.strip().replace('\r', '').replace('\n', '').split(' ')))
+    def __next__(self):
+        line = self.file.readline()
+        if line is None or len(line) <= 0:
+            raise StopIteration
 
-            if len(words) <= 0:
-                continue
+        clean_line = line.strip().replace('\r', '').replace('\n', '')
 
-            yield words
+        image_id, *words = list(filter(None, clean_line.split(' ')))
+        return words
+
+    def close(self):
+        self.file.close()
 
 
 if __name__ == '__main__':
     abspath = os.path.dirname(os.path.abspath(__file__))
-    data_file = os.path.join(abspath, "tags.txt")
+    data_file = os.path.join(abspath, "image-tags.txt")
 
-    # read the tokenized reviews into a list
-    # each review item becomes a serries of words
-    # so this becomes a list of lists
-    documents = list(read_input(data_file))
-    logging.info("Done reading data file")
+    # Count the lines that will be read
+    with open(data_file, 'r', encoding='utf-8') as f:
+        lineCount = sum(1 for line in f)
 
-    #for doc in documents:
-        #logging.info("Doc: " + str(doc))
+    # Create a line iterator
+    lineIterator = LineReader(data_file)
 
-    # build vocabulary and train model
+    # Build vocabulary and train model
     model = gensim.models.Word2Vec(
-        documents,
+        lineIterator,
         size=128,
         window=128,
         min_count=1,
         workers=8)
-    model.train(documents, total_examples=len(documents), epochs=15)
+    model.train(lineIterator, total_examples=lineCount, epochs=15)
+
+    # Close the line reader
+    lineIterator.close()
 
     if not os.path.exists(os.path.join(abspath, "vectors")):
         os.makedirs(os.path.join(abspath, "vectors"))

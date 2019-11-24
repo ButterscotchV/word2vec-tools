@@ -1,13 +1,13 @@
-import tensorflow as tf
-import numpy as np
-import gensim
 import logging
 import os
+
+import gensim
+import numpy as np
+import tensorflow as tf
 
 logging.basicConfig(
     format='%(asctime)s : %(levelname)s : %(message)s',
     level=logging.INFO)
-
 
 if __name__ == '__main__':
     abspath = os.path.dirname(os.path.abspath(__file__))
@@ -42,7 +42,7 @@ if __name__ == '__main__':
         with tf.compat.v1.Session(graph=g_1) as sess:
             sess.run(init_op)
 
-        # Save the variables to disk.
+            # Save the variables to disk.
             save_path = saver.save(sess, os.path.join(abspath, "tensorboard-dir/model.ckpt"))
             print("Model saved in path: %s" % save_path)
 
